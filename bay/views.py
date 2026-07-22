@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Customer, Vehicle, ServiceVisit, Part, VisitPartUsed
-from .forms import CustomerForm, VehicleForm, ServiceVisitForm, VisitPartUsedForm, PartForm
+from .models import Customer, Vehicle, ServiceVisit, Part, VisitPartUsed, Technician
+from .forms import CustomerForm, VehicleForm, ServiceVisitForm, VisitPartUsedForm, PartForm, TechnicianForm
 
 
 # 1. Dashboard View
@@ -48,13 +48,15 @@ def visit_detail(request, pk):
             visit_part.visit = visit
             visit_part.unit_price = visit_part.part.unit_price
             
-            # Inventory Deduction
+            # Inventory Deduction & Stock Check
             part = visit_part.part
             if part.quantity_in_stock >= visit_part.quantity:
                 part.quantity_in_stock -= visit_part.quantity
                 part.save()
                 visit_part.save()
             return redirect('visit_detail', pk=visit.pk)
+        else:
+            print("FORM ERRORS:", part_form.errors) # Debug helper in terminal if anything fails
     else:
         part_form = VisitPartUsedForm()
 
@@ -104,3 +106,27 @@ def create_part(request):
     else:
         form = PartForm()
     return render(request, 'bay/part_form.html', {'form': form})
+
+
+# 9. Customer List View
+def customer_list(request):
+    customers = Customer.objects.prefetch_related('vehicles').all().order_by('name')
+    return render(request, 'bay/customer_list.html', {'customers': customers})
+
+
+# 10. Technician List View
+def technician_list(request):
+    technicians = Technician.objects.all().order_by('-is_senior', 'name')
+    return render(request, 'bay/technician_list.html', {'technicians': technicians})
+
+
+# 11. Create Technician View
+def create_technician(request):
+    if request.method == 'POST':
+        form = TechnicianForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('technician_list')
+    else:
+        form = TechnicianForm()
+    return render(request, 'bay/technician_form.html', {'form': form})

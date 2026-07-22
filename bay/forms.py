@@ -1,28 +1,15 @@
 from django import forms
-from .models import Customer, Vehicle, ServiceVisit, Part, VisitPartUsed
-
+from .models import Customer, Vehicle, ServiceVisit, VisitPartUsed, Part, Technician
 
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['name', 'phone_number']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Full Name'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 0771234567'}),
-        }
-
+        fields = ['name', 'phone_number', 'email', 'address']
 
 class VehicleForm(forms.ModelForm):
     class Meta:
         model = Vehicle
-        fields = ['plate_number', 'owner', 'vehicle_type', 'make_model']
-        widgets = {
-            'plate_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. UBB 123X'}),
-            'owner': forms.Select(attrs={'class': 'form-select'}),
-            'vehicle_type': forms.Select(attrs={'class': 'form-select'}),
-            'make_model': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Toyota Fielder'}),
-        }
-
+        fields = ['owner', 'plate_number', 'make_model', 'vehicle_type']
 
 class ServiceVisitForm(forms.ModelForm):
     class Meta:
@@ -31,38 +18,37 @@ class ServiceVisitForm(forms.ModelForm):
             'vehicle', 
             'senior_technician', 
             'assigned_technicians', 
-            'labour_charge', 
+            'issue_description', 
+            'transport_choice',
             'wheel_alignment', 
             'wheel_balancing', 
+            'computer_diagnostics', 
+            'oil_change_service', 
+            'brake_service', 
+            'suspension_check', 
+            'ac_servicing', 
+            'labour_charge', 
             'status'
         ]
         widgets = {
-            'vehicle': forms.Select(attrs={'class': 'form-select'}),
-            'senior_technician': forms.Select(attrs={'class': 'form-select'}),
-            'assigned_technicians': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
-            'labour_charge': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'UGX Amount'}),
-            'wheel_alignment': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'wheel_balancing': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'status': forms.Select(attrs={'class': 'form-select'}),
+            'assigned_technicians': forms.CheckboxSelectMultiple(),
+            'issue_description': forms.Textarea(attrs={'rows': 3, 'class': 'form-control', 'placeholder': 'Describe the issue or state if unsure what is wrong...'}),
+            'transport_choice': forms.Select(attrs={'class': 'form-select'}),
         }
-
 
 class VisitPartUsedForm(forms.ModelForm):
     class Meta:
         model = VisitPartUsed
-        fields = ['part', 'quantity']
-        widgets = {
-            'part': forms.Select(attrs={'class': 'form-select'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
-        }
-
+        fields = ['part', 'quantity'] # Exclude 'visit' and 'unit_price' so validation passes cleanly
 
 class PartForm(forms.ModelForm):
     class Meta:
         model = Part
-        fields = ['name', 'unit_price', 'quantity_in_stock']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Part Name (e.g. Engine Oil 5L)'}),
-            'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price in UGX'}),
-            'quantity_in_stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity in Stock'}),
-        }
+        fields = ['name', 'category', 'unit_price', 'quantity_in_stock']
+
+class TechnicianForm(forms.ModelForm):
+    class Meta:
+        model = Technician
+        fields = ['name', 'phone_number', 'is_senior']
+
+        

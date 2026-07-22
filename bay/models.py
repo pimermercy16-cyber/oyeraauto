@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 # 1. Customer Model
 class Customer(models.Model):
     name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField(blank=True, null=True)    
+    address = models.TextField(blank=True, null=True)   
 
     def __str__(self):
         return f"{self.name} ({self.phone_number})"
@@ -63,22 +64,38 @@ class Technician(models.Model):
 class ServiceVisit(models.Model):
     STATUS_CHOICES = [
         ('PENDING', 'In Service Bay'),
+        ('LOGISTICS_PENDING', 'Pending Pickup/Arrival'),
         ('COMPLETED', 'Completed'),
         ('PAID', 'Paid & Released'),
     ]
+    
+    TRANSPORT_CHOICES = [
+        ('CUSTOMER_BRINGING', 'Customer will bring car to service bay'),
+        ('BAY_PICKUP_TOW', 'Service bay to fix/tow from current location'),
+    ]
+
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='visits')
     visit_date = models.DateTimeField(auto_now_add=True)
     senior_technician = models.ForeignKey(
-        Technician, on_delete=models.SET_NULL, null=True, related_name='inspected_jobs'
+        Technician, on_delete=models.SET_NULL, null=True, blank=True, related_name='inspected_jobs'
     )
-    assigned_technicians = models.ManyToManyField(Technician, related_name='service_jobs')
+    assigned_technicians = models.ManyToManyField(Technician, blank=True, related_name='service_jobs')
     
-    # Standard Service Charges (in UGX)
-    labour_charge = models.DecimalField(max_digits=10, decimal_places=2, default=20000.00)  # Standard 20,000 UGX
-    wheel_alignment = models.BooleanField(default=False)  # Charge: 30,000 UGX if True
-    wheel_balancing = models.BooleanField(default=False)  # Charge: 20,000 UGX if True
+    # Customer Issue & Logistics Options
+    issue_description = models.TextField(blank=True, null=True, help_text="Describe the problem, or state if unsure what's wrong.")
+    transport_choice = models.CharField(max_length=50, choices=TRANSPORT_CHOICES, default='CUSTOMER_BRINGING')
+
+    # Comprehensive Service Checkboxes & Charges (in UGX)
+    labour_charge = models.DecimalField(max_digits=10, decimal_places=2, default=20000.00)
+    wheel_alignment = models.BooleanField(default=False)       # 30,000 UGX
+    wheel_balancing = models.BooleanField(default=False)       # 20,000 UGX
+    computer_diagnostics = models.BooleanField(default=False)  # 50,000 UGX
+    oil_change_service = models.BooleanField(default=False)    # 40,000 UGX
+    brake_service = models.BooleanField(default=False)         # 40,000 UGX
+    suspension_check = models.BooleanField(default=False)      # 30,000 UGX
+    ac_servicing = models.BooleanField(default=False)          # 60,000 UGX
     
-    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='PENDING')
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='PENDING')
 
     @property
     def total_service_charges(self):
@@ -87,6 +104,16 @@ class ServiceVisit(models.Model):
             total += 30000
         if self.wheel_balancing:
             total += 20000
+        if self.computer_diagnostics:
+            total += 50000
+        if self.oil_change_service:
+            total += 40000
+        if self.brake_service:
+            total += 40000
+        if self.suspension_check:
+            total += 30000
+        if self.ac_servicing:
+            total += 60000
         return total
 
     @property
