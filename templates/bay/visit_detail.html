@@ -1,165 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Oyera Auto - Job Card #{{ visit.pk }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: white !important;
-                color: black !important;
-            }
-            .card {
-                border: none !important;
-                box-shadow: none !important;
-            }
-        }
-    </style>
-</head>
-<body class="bg-light">
-    <!-- Navbar (Hidden on Print) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 no-print">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">Oyera Auto Bay</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-                <a class="nav-link" href="{% url 'visit_list' %}">Service Visits</a>
-                <a class="nav-link" href="{% url 'customer_list' %}">Customers</a>
-                <a class="nav-link" href="{% url 'technician_list' %}">Technicians</a>
-                <a class="nav-link" href="{% url 'part_list' %}">Inventory</a>
+{% extends 'bay/base.html' %}
+{% block title %}Job Card #{{ visit.pk }} — Oyera Auto Bay{% endblock %}
+
+{% block content %}
+<div class="container oab-page">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <a href="{% url 'visit_list' %}" class="btn oab-btn-secondary">&larr; Back to Service Visits</a>
+        <button onclick="window.print()" class="btn oab-btn-primary">Print / Save PDF Invoice</button>
+    </div>
+
+    <div class="oab-certificate">
+        <!-- Invoice Header -->
+        <div class="row pb-4 mb-4">
+            <div class="col-6">
+                <h2 class="oab-font-display fw-bold mb-1">OYERA AUTO BAY</h2>
+                <p class="text-muted mb-0">Professional Auto Repair &amp; Maintenance</p>
+            </div>
+            <div class="col-6 text-end">
+                <h4 class="fw-bold mb-1">JOB CARD INVOICE</h4>
+                <p class="mb-0"><strong>Invoice #:</strong> <span class="oab-invoice-no">INV-{{ visit.pk }}</span></p>
+                <p class="mb-0"><strong>Date:</strong> {{ visit.visit_date|date:"F d, Y" }}</p>
+                <p class="mb-0"><strong>Status:</strong> <span class="badge bg-secondary">{{ visit.get_status_display }}</span></p>
             </div>
         </div>
-    </nav>
+        <hr class="oab-certificate-rule gold">
 
-    <div class="container my-4">
-        <!-- Action Buttons (Hidden on Print) -->
-        <div class="d-flex justify-content-between align-items-center mb-4 no-print">
-            <a href="{% url 'visit_list' %}" class="btn btn-secondary">&larr; Back to Service Visits</a>
-            <button onclick="window.print()" class="btn btn-primary">🖨️ Print / Save PDF Invoice</button>
+        <!-- Customer & Vehicle Info -->
+        <div class="row mb-4">
+            <div class="col-6">
+                <h5 class="fw-bold">Customer Details</h5>
+                <p class="mb-1"><strong>Name:</strong> {{ visit.vehicle.owner.name }}</p>
+                <p class="mb-0"><strong>Phone:</strong> {{ visit.vehicle.owner.phone_number }}</p>
+            </div>
+            <div class="col-6">
+                <h5 class="fw-bold">Vehicle Details</h5>
+                <p class="mb-1"><strong>Plate Number:</strong> {{ visit.vehicle.plate_number }}</p>
+                <p class="mb-1"><strong>Make / Model:</strong> {{ visit.vehicle.make_model }}</p>
+                <p class="mb-0"><strong>Type:</strong> {{ visit.vehicle.get_vehicle_type_display }}</p>
+            </div>
         </div>
 
-        <div class="card shadow-sm p-4">
-            <!-- Invoice Header -->
-            <div class="row border-bottom pb-4 mb-4">
-                <div class="col-6">
-                    <h2 class="fw-bold text-dark">OYERA AUTO BAY</h2>
-                    <p class="text-muted mb-0">Professional Auto Repair & Maintenance</p>
-                </div>
-                <div class="col-6 text-end">
-                    <h4 class="fw-bold text-primary">JOB CARD INVOICE</h4>
-                    <p class="mb-0"><strong>Invoice #:</strong> INV-{{ visit.pk }}</p>
-                    <p class="mb-0"><strong>Date:</strong> {{ visit.visit_date|date:"F d, Y" }}</p>
-                    <p class="mb-0"><strong>Status:</strong> <span class="badge bg-secondary">{{ visit.get_status_display }}</span></p>
-                </div>
+        <!-- Technician Info -->
+        <div class="row mb-4 oab-panel-muted p-3 mx-0">
+            <div class="col-6">
+                <p class="mb-1"><strong>Senior Technician:</strong> {{ visit.senior_technician.name|default:"None Assigned" }}</p>
             </div>
-
-            <!-- Customer & Vehicle Info -->
-            <div class="row mb-4">
-                <div class="col-6">
-                    <h5 class="fw-bold text-secondary">Customer Details</h5>
-                    <p class="mb-1"><strong>Name:</strong> {{ visit.vehicle.owner.name }}</p>
-                    <p class="mb-0"><strong>Phone:</strong> {{ visit.vehicle.owner.phone_number }}</p>
-                </div>
-                <div class="col-6">
-                    <h5 class="fw-bold text-secondary">Vehicle Details</h5>
-                    <p class="mb-1"><strong>Plate Number:</strong> {{ visit.vehicle.plate_number }}</p>
-                    <p class="mb-1"><strong>Make / Model:</strong> {{ visit.vehicle.make_model }}</p>
-                    <p class="mb-0"><strong>Type:</strong> {{ visit.vehicle.get_vehicle_type_display }}</p>
-                </div>
-            </div>
-
-            <!-- Technician Info -->
-            <div class="row mb-4 bg-light p-3 rounded">
-                <div class="col-6">
-                    <p class="mb-1"><strong>Senior Technician:</strong> {{ visit.senior_technician.name|default:"None Assigned" }}</p>
-                </div>
-                <div class="col-6">
-                    <p class="mb-1"><strong>Assigned Technicians:</strong> 
-                        {% for tech in visit.assigned_technicians.all %}
-                            {{ tech.name }}{% if not forloop.last %}, {% endif %}
-                        {% empty %}
-                            None
-                        {% endfor %}
-                    </p>
-                </div>
-                <div class="col-12 mt-2">
-                    <p class="mb-0"><strong>Services:</strong> 
-                        {% if visit.wheel_alignment %}Wheel Alignment{% endif %}
-                        {% if visit.wheel_alignment and visit.wheel_balancing %}, {% endif %}
-                        {% if visit.wheel_balancing %}Wheel Balancing{% endif %}
-                        {% if not visit.wheel_alignment and not visit.wheel_balancing %}Standard Service{% endif %}
-                    </p>
-                </div>
-            </div>
-
-            <!-- Parts Used Table -->
-            <h5 class="fw-bold text-secondary mb-3">Parts Used</h5>
-            <table class="table table-bordered align-middle mb-4">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Part Name</th>
-                        <th class="text-center">Quantity</th>
-                        <th class="text-end">Unit Price (UGX)</th>
-                        <th class="text-end">Total (UGX)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in visit.parts_used.all %}
-                    <tr>
-                        <td>{{ item.part.name }}</td>
-                        <td class="text-center">{{ item.quantity }}</td>
-                        <td class="text-end">{{ item.unit_price|floatformat:0 }}</td>
-                        <td class="text-end">{{ item.get_total_price|floatformat:0 }}</td>
-                    </tr>
+            <div class="col-6">
+                <p class="mb-1"><strong>Assigned Technicians:</strong>
+                    {% for tech in visit.assigned_technicians.all %}
+                        {{ tech.name }}{% if not forloop.last %}, {% endif %}
                     {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-3">No parts used for this service visit.</td>
-                    </tr>
+                        None
                     {% endfor %}
-                </tbody>
-            </table>
-
-            <!-- Add Part Form (Hidden on Print) -->
-            <div class="card bg-light border-0 p-3 mb-4 no-print">
-                <h6 class="fw-bold mb-3">+ Add Spare Part to Job Card</h6>
-                <form method="post" class="row g-3">
-                    {% csrf_token %}
-                    <div class="col-md-7">
-                        {{ part_form.part }}
-                    </div>
-                    <div class="col-md-3">
-                        {{ part_form.quantity }}
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-success w-100">Add Part</button>
-                    </div>
-                </form>
+                </p>
             </div>
+            <div class="col-12 mt-2">
+                <p class="mb-0"><strong>Services:</strong>
+                    {% if visit.issue_description %}{{ visit.issue_description }}{% else %}Standard service visit{% endif %}
+                </p>
+            </div>
+        </div>
 
-            <!-- Cost Summary -->
-            <div class="row justify-content-end">
-                <div class="col-md-5">
-                    <table class="table table-sm">
-                        <tr>
-                            <td><strong>Labour Charge:</strong></td>
-                            <td class="text-end">UGX {{ visit.labour_charge|floatformat:0 }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Parts Total:</strong></td>
-                            <td class="text-end">UGX {{ visit.get_parts_total|floatformat:0 }}</td>
-                        </tr>
-                        <tr class="table-dark">
-                            <td><strong>Grand Total:</strong></td>
-                            <td class="text-end"><strong>UGX {{ visit.get_grand_total|floatformat:0 }}</strong></td>
-                        </tr>
-                    </table>
-                </div>
+        <!-- Service Charges -->
+        <h5 class="fw-bold mb-3">Service Charges</h5>
+        <table class="table table-bordered align-middle mb-4">
+            <tbody>
+                <tr><td>Labour Charge</td><td class="text-end">UGX {{ visit.labour_charge|floatformat:0 }}</td></tr>
+                {% if visit.wheel_alignment %}<tr><td>Wheel Alignment</td><td class="text-end">UGX 30,000</td></tr>{% endif %}
+                {% if visit.wheel_balancing %}<tr><td>Wheel Balancing</td><td class="text-end">UGX 20,000</td></tr>{% endif %}
+                {% if visit.computer_diagnostics %}<tr><td>Computer Diagnostics</td><td class="text-end">UGX 50,000</td></tr>{% endif %}
+                {% if visit.oil_change_service %}<tr><td>Oil Change Service</td><td class="text-end">UGX 40,000</td></tr>{% endif %}
+                {% if visit.brake_service %}<tr><td>Brake Service</td><td class="text-end">UGX 40,000</td></tr>{% endif %}
+                {% if visit.suspension_check %}<tr><td>Suspension Check</td><td class="text-end">UGX 30,000</td></tr>{% endif %}
+                {% if visit.ac_servicing %}<tr><td>AC Servicing</td><td class="text-end">UGX 60,000</td></tr>{% endif %}
+            </tbody>
+        </table>
+
+        <!-- Parts Used Table -->
+        <h5 class="fw-bold mb-3">Parts Used</h5>
+        <table class="table table-bordered align-middle mb-4">
+            <thead>
+                <tr>
+                    <th>Part Name</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-end">Unit Price (UGX)</th>
+                    <th class="text-end">Total (UGX)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in visit.parts_used.all %}
+                <tr>
+                    <td>{{ item.part.name }}</td>
+                    <td class="text-center">{{ item.quantity }}</td>
+                    <td class="text-end">{{ item.unit_price|floatformat:0 }}</td>
+                    <td class="text-end">{{ item.subtotal|floatformat:0 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-3">No parts used for this service visit.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Add Part Form (Hidden on Print) -->
+        <div class="oab-panel-muted p-3 mb-4 no-print">
+            <h6 class="fw-bold mb-3">+ Add Spare Part to Job Card</h6>
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-7">{{ part_form.part }}</div>
+                <div class="col-md-3">{{ part_form.quantity }}</div>
+                <div class="col-md-2"><button type="submit" class="btn oab-btn-success w-100">Add Part</button></div>
+            </form>
+        </div>
+
+        <!-- Cost Summary -->
+        <div class="row justify-content-end">
+            <div class="col-md-5">
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Service Charges Total:</strong></td>
+                        <td class="text-end">UGX {{ visit.total_service_charges|floatformat:0 }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Parts Total:</strong></td>
+                        <td class="text-end">UGX {{ visit.total_parts_cost|floatformat:0 }}</td>
+                    </tr>
+                    <tr class="table-dark">
+                        <td><strong>Grand Total:</strong></td>
+                        <td class="text-end"><strong>UGX {{ visit.grand_total|floatformat:0 }}</strong></td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

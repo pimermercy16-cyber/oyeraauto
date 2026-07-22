@@ -1,38 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Oyera Auto - Add New Part</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">Oyera Auto Bay</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-                <a class="nav-link" href="{% url 'visit_list' %}">Service Visits</a>
-                <a class="nav-link active" href="{% url 'part_list' %}">Inventory</a>
-            </div>
-        </div>
-    </nav>
+{% extends 'bay/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Add Part — Oyera Auto Bay{% endblock %}
 
-    <div class="container col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Add New Part to Inventory</h4>
-            </div>
-            <div class="card-body">
+{% block content %}
+<div class="container oab-page">
+    <div class="oab-form-card">
+        <span class="oab-eyebrow">Stock Room</span>
+        <h1 class="oab-page-title mb-4">Add New Part to Inventory</h1>
+
+        <div class="card">
+            <div class="oab-card-body">
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    {{ form|crispy }}
                     <div class="mt-4 d-flex justify-content-between">
-                        <a href="{% url 'part_list' %}" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-success">Save Part</button>
+                        <a href="{% url 'part_list' %}" class="btn oab-btn-secondary">Cancel</a>
+                        <button type="submit" class="btn oab-btn-success">Save Part</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -86,7 +87,7 @@ class ServiceVisit(models.Model):
     transport_choice = models.CharField(max_length=50, choices=TRANSPORT_CHOICES, default='CUSTOMER_BRINGING')
 
     # Comprehensive Service Checkboxes & Charges (in UGX)
-    labour_charge = models.DecimalField(max_digits=10, decimal_places=2, default=20000.00)
+    labour_charge = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('20000.00'))
     wheel_alignment = models.BooleanField(default=False)       # 30,000 UGX
     wheel_balancing = models.BooleanField(default=False)       # 20,000 UGX
     computer_diagnostics = models.BooleanField(default=False)  # 50,000 UGX

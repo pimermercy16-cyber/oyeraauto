@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Oyera Auto Bay{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+    <nav class="oab-navbar no-print">
+        <div class="container oab-navbar-inner">
+            <a class="oab-brand" href="{% url 'dashboard' %}">
+                <span class="oab-brand-mark">OA</span>
+                <span class="oab-brand-text">Oyera Auto <em>Bay</em></span>
+            </a>
+            <div class="oab-nav-links">
+                <a href="{% url 'dashboard' %}" class="oab-nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="{% url 'visit_list' %}" class="oab-nav-link {% if request.resolver_match.url_name == 'visit_list' or request.resolver_match.url_name == 'visit_detail' %}active{% endif %}">Service Visits</a>
+                <a href="{% url 'customer_list' %}" class="oab-nav-link {% if request.resolver_match.url_name == 'customer_list' %}active{% endif %}">Customers</a>
+                <a href="{% url 'technician_list' %}" class="oab-nav-link {% if request.resolver_match.url_name == 'technician_list' %}active{% endif %}">Technicians</a>
+                <a href="{% url 'part_list' %}" class="oab-nav-link {% if request.resolver_match.url_name == 'part_list' %}active{% endif %}">Inventory</a>
+                <a href="{% url 'create_visit' %}" class="oab-nav-cta">+ New Visit</a>
+                <a href="/admin/" target="_blank" class="oab-nav-link oab-nav-admin">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="container no-print oab-messages">
+        {% for message in messages %}
+        <div class="oab-alert oab-alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="oab-footer no-print">
+        <div class="container">
+            <span>&copy; {% now "Y" %} Oyera Auto Service Bay Ltd.</span>
+            <span class="oab-footer-muted">Precision service records, handled with care.</span>
+        </div>
+    </footer>
+
+    <script>
+        // Progressive-enhancement fallback for browsers without CSS :has() support —
+        // mirrors the checked-state styling in style.css by toggling a class in JS.
+        document.querySelectorAll('.oab-toggle-card').forEach(function (card) {
+            var input = card.querySelector('input[type="checkbox"]');
+            if (!input) return;
+            var sync = function () { card.classList.toggle('is-checked', input.checked); };
+            input.addEventListener('change', sync);
+            sync();
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>
+

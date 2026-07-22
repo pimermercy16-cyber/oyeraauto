@@ -1,31 +1,602 @@
-/* Oyera Auto Bay - Luxury Performance Styling */
+/* ==========================================================================
+   OYERA AUTO SERVICE BAY — "Atelier Performance" design system
+   Inspired by: Bentley (dark luxury, bronze accents, crafted certificates)
+                McLaren F1 (papaya accent, high-contrast CTAs, telemetry data)
+   ========================================================================== */
+
+:root {
+    --ink: #0b0c10;
+    --surface: #15171d;
+    --surface-2: #1c1f26;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --text: #eef0f3;
+    --text-muted: #9aa1ad;
+    --text-faint: #6b7280;
+
+    --papaya: #ff7a1a;
+    --papaya-dark: #e0630a;
+    --papaya-soft: rgba(255, 122, 26, 0.14);
+
+    --bronze: #c9a227;
+    --bronze-soft: rgba(201, 162, 39, 0.14);
+    --bronze-line: rgba(201, 162, 39, 0.4);
+
+    --parchment: #f7f3ea;
+    --parchment-line: #ddd3ba;
+    --parchment-ink: #23241f;
+
+    --success: #3fb27f;
+    --success-soft: rgba(63, 178, 127, 0.14);
+    --danger: #e5484d;
+    --danger-soft: rgba(229, 72, 77, 0.14);
+    --warning: #e0aa1f;
+    --warning-soft: rgba(224, 170, 31, 0.14);
+
+    --radius-lg: 16px;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.65);
+    --shadow-sm: 0 8px 20px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* -------------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------------- */
+* { box-sizing: border-box; }
+
+html, body {
+    background-color: var(--ink);
+}
+
 body {
-    background-color: #f4f5f7;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #1f2833;
+    color: var(--text);
+    font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.navbar-dark {
-    background-color: #0b0c10 !important;
-    border-bottom: 2px solid #1f2833;
+main { flex: 1 0 auto; }
+
+h1, h2, h3, h4, h5,
+.oab-font-display {
+    font-family: "Fraunces", "Times New Roman", serif;
+    letter-spacing: -0.01em;
 }
 
-.card {
-    border: none;
+a { text-decoration: none; }
+
+::selection { background: var(--papaya-soft); color: var(--text); }
+
+:focus-visible {
+    outline: 2px solid var(--papaya);
+    outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------------------
+   Navbar
+   ------------------------------------------------------------------------- */
+.oab-navbar {
+    background: linear-gradient(180deg, #0e0f13 0%, var(--ink) 100%);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+.oab-navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 0;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.oab-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--text);
+}
+
+.oab-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, var(--bronze) 0%, #8a6c14 100%);
+    color: #16130a;
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 0.95rem;
 }
 
-.table-dark {
-    background-color: #0b0c10 !important;
+.oab-brand-text {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+}
+.oab-brand-text em { color: var(--papaya); font-style: normal; }
+
+.oab-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.35rem;
+    flex-wrap: wrap;
 }
 
-.btn-primary {
-    background-color: #1f2833;
+.oab-nav-link {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+.oab-nav-link:hover { color: var(--text); }
+.oab-nav-link.active { color: var(--text); border-color: var(--papaya); }
+.oab-nav-admin { color: var(--bronze) !important; }
+
+.oab-nav-cta {
+    background: var(--papaya);
+    color: #1a0e05;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+.oab-nav-cta:hover { background: var(--papaya-dark); transform: translateY(-1px); color: #1a0e05; }
+
+/* -------------------------------------------------------------------------
+   Messages
+   ------------------------------------------------------------------------- */
+.oab-messages { margin-top: 1.25rem; }
+.oab-alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    font-size: 0.9rem;
+}
+.oab-alert-success { border-color: var(--success); color: var(--success); }
+.oab-alert-error, .oab-alert-danger { border-color: var(--danger); color: var(--danger); }
+.oab-alert-info { border-color: var(--bronze-line); color: var(--bronze); }
+
+/* -------------------------------------------------------------------------
+   Page shell / headers
+   ------------------------------------------------------------------------- */
+.oab-page {
+    padding: 2.5rem 0 4rem;
+}
+
+.oab-page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.oab-eyebrow {
+    display: block;
+    color: var(--bronze);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.oab-page-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+}
+
+.oab-page-sub {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin-top: 0.35rem;
+}
+
+/* -------------------------------------------------------------------------
+   Performance strip (dashboard signature element)
+   ------------------------------------------------------------------------- */
+.oab-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    overflow: hidden;
+    margin-bottom: 2.25rem;
+}
+
+.oab-strip-item {
+    padding: 1.35rem 1.5rem;
+    border-right: 1px solid var(--line);
+    position: relative;
+}
+.oab-strip-item:last-child { border-right: none; }
+.oab-strip-item::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--bronze-line);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.oab-strip-item:hover::before { opacity: 1; }
+
+.oab-strip-label {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    margin-bottom: 0.5rem;
+}
+
+.oab-strip-value {
+    font-family: "Space Grotesk", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+}
+
+.oab-strip-value.accent { color: var(--papaya); }
+.oab-strip-value.gold { color: var(--bronze); }
+
+/* -------------------------------------------------------------------------
+   Cards
+   ------------------------------------------------------------------------- */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    color: var(--text);
+}
+
+.oab-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.4rem;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+}
+.oab-card-header h5, .oab-card-header h4 { margin: 0; }
+
+.oab-card-body { padding: 1.4rem; }
+
+/* -------------------------------------------------------------------------
+   Buttons
+   ------------------------------------------------------------------------- */
+.btn { border-radius: 999px; font-weight: 600; letter-spacing: 0.02em; }
+
+.btn-primary, .oab-btn-primary {
+    background: var(--papaya);
     border: none;
-    transition: background-color 0.2s ease;
+    color: #1a0e05;
+}
+.btn-primary:hover, .oab-btn-primary:hover { background: var(--papaya-dark); color: #1a0e05; }
+
+.btn-success, .oab-btn-success {
+    background: var(--success);
+    border: none;
+    color: #06251a;
+}
+.btn-success:hover { filter: brightness(1.08); color: #06251a; }
+
+.btn-secondary, .oab-btn-secondary {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--text-muted);
+}
+.btn-secondary:hover { border-color: var(--bronze-line); color: var(--bronze); background: transparent; }
+
+.btn-outline-secondary, .btn-outline-primary, .btn-outline-dark {
+    border: 1px solid var(--bronze-line);
+    color: var(--bronze);
+    background: transparent;
+}
+.btn-outline-secondary:hover, .btn-outline-primary:hover, .btn-outline-dark:hover {
+    background: var(--bronze-soft);
+    color: var(--bronze);
+    border-color: var(--bronze);
 }
 
-.btn-primary:hover {
-    background-color: #0b0c10;
+.btn-sm { font-size: 0.78rem; padding: 0.35rem 0.85rem; }
+
+/* -------------------------------------------------------------------------
+   Tables
+   ------------------------------------------------------------------------- */
+.table {
+    color: var(--text);
+    --bs-table-bg: transparent;
+    --bs-table-striped-bg: rgba(255,255,255,0.02);
+    --bs-table-hover-bg: rgba(255,122,26,0.06);
+    margin-bottom: 0;
+}
+.table > :not(caption) > * > * { border-bottom-color: var(--line); background: transparent; color: var(--text); }
+
+.table thead th, thead.table-dark th {
+    background: transparent !important;
+    color: var(--text-faint) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--bronze-line) !important;
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+}
+
+.table-dark { --bs-table-bg: transparent; }
+
+/* -------------------------------------------------------------------------
+   Badges
+   ------------------------------------------------------------------------- */
+.badge { font-weight: 600; letter-spacing: 0.02em; padding: 0.4em 0.7em; border-radius: 999px; }
+.badge.bg-secondary { background: var(--surface-2) !important; color: var(--text-muted) !important; border: 1px solid var(--line); }
+.badge.bg-warning { background: var(--warning-soft) !important; color: var(--warning) !important; }
+.badge.bg-success { background: var(--success-soft) !important; color: var(--success) !important; }
+.badge.bg-info { background: var(--bronze-soft) !important; color: var(--bronze) !important; }
+.badge.bg-danger { background: var(--danger-soft) !important; color: var(--danger) !important; }
+
+/* -------------------------------------------------------------------------
+   Forms (works with plain {{ form.as_p }} output — no crispy-forms needed)
+   ------------------------------------------------------------------------- */
+form p { margin-bottom: 1.1rem; }
+
+form p label {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    margin-bottom: 0.4rem;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="number"],
+form input[type="password"],
+form input[type="tel"],
+form select,
+form textarea,
+.form-control,
+.form-select {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 0.6rem 0.8rem;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.92rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+form input:focus, form select:focus, form textarea:focus,
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--papaya);
+    box-shadow: 0 0 0 3px var(--papaya-soft);
+    background: var(--surface-2);
+    color: var(--text);
+}
+
+form input[type="checkbox"] { width: auto; accent-color: var(--papaya); margin-right: 0.4rem; }
+
+::placeholder { color: var(--text-faint); opacity: 1; }
+
+.oab-form-card {
+    max-width: 640px;
+}
+
+/* -------------------------------------------------------------------------
+   Toggle tiles — "select your race settings" service checklist & roster
+   ------------------------------------------------------------------------- */
+.oab-toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.75rem;
+}
+
+.oab-toggle-card {
+    position: relative;
+    display: block;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+.oab-toggle-card:hover { border-color: var(--bronze-line); transform: translateY(-1px); }
+
+.oab-toggle-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.oab-toggle-face { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.oab-toggle-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.oab-toggle-price {
+    font-family: "Space Grotesk", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.oab-toggle-card input[type="checkbox"]:checked ~ .oab-toggle-face .oab-toggle-title,
+.oab-toggle-card.is-checked .oab-toggle-face .oab-toggle-title {
+    color: var(--papaya);
+}
+
+.oab-toggle-card:has(input[type="checkbox"]:checked),
+.oab-toggle-card.is-checked {
+    border-color: var(--papaya);
+    background: var(--papaya-soft);
+}
+
+.oab-toggle-card::after {
+    content: "";
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+}
+.oab-toggle-card:has(input[type="checkbox"]:checked)::after,
+.oab-toggle-card.is-checked::after {
+    background: var(--papaya);
+    border-color: var(--papaya);
+}
+
+.oab-estimate-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    background: var(--surface-2);
+    border: 1px solid var(--bronze-line);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+}
+
+.oab-estimate-note {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--text-faint);
+    margin-top: 0.2rem;
+}
+
+.oab-section-label {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    color: var(--bronze);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+/* -------------------------------------------------------------------------
+   Job Card / Invoice — Bentley "certificate" surface
+   ------------------------------------------------------------------------- */
+.oab-certificate {
+    background: var(--parchment);
+    color: var(--parchment-ink);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--parchment-line);
+    padding: 2.25rem;
+    box-shadow: var(--shadow);
+}
+
+.oab-certificate h2, .oab-certificate h4, .oab-certificate h5 {
+    color: var(--parchment-ink);
+}
+
+.oab-certificate-rule {
+    border: none;
+    border-top: 1px solid var(--parchment-line);
+    margin: 1.5rem 0;
+}
+
+.oab-certificate-rule.gold {
+    border-top: 2px solid var(--bronze);
+    opacity: 0.7;
+}
+
+.oab-certificate .text-muted { color: #6f6a5a !important; }
+
+.oab-invoice-no {
+    font-family: "Space Grotesk", monospace;
+    letter-spacing: 0.04em;
+    color: var(--bronze);
+    font-weight: 600;
+}
+
+.oab-certificate table thead th {
+    color: #6f6a5a !important;
+    border-bottom-color: var(--bronze) !important;
+}
+.oab-certificate table > :not(caption) > * > * {
+    border-bottom-color: var(--parchment-line);
+    color: var(--parchment-ink);
+}
+.oab-certificate .table-dark { --bs-table-bg: #23241f; color: #f7f3ea; }
+.oab-certificate .table-dark td, .oab-certificate .table-dark th { color: #f7f3ea !important; }
+
+.oab-panel-muted {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid var(--parchment-line);
+    border-radius: var(--radius);
+}
+
+/* -------------------------------------------------------------------------
+   Footer
+   ------------------------------------------------------------------------- */
+.oab-footer {
+    border-top: 1px solid var(--line);
+    padding: 1.25rem 0;
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+.oab-footer-muted { color: var(--text-faint); }
+
+/* -------------------------------------------------------------------------
+   Print styles (job card / invoice)
+   ------------------------------------------------------------------------- */
+@media print {
+    .no-print { display: none !important; }
+    body { background: #ffffff !important; }
+    .oab-certificate {
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+    }
+}
+
+/* -------------------------------------------------------------------------
+   Responsive
+   ------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .oab-page-title { font-size: 1.5rem; }
+    .oab-strip { grid-template-columns: 1fr 1fr; }
+    .oab-certificate { padding: 1.25rem; }
 }
