@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer, Vehicle, ServiceVisit, VisitPartUsed
+from .models import Customer, Vehicle, ServiceVisit, Part, VisitPartUsed
 
 
 class CustomerForm(forms.ModelForm):
@@ -56,4 +56,13 @@ class VisitPartUsedForm(forms.ModelForm):
             'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
         }
 
-        
+
+class PartForm(forms.ModelForm):
+    class Meta:
+        model = Part
+        fields = ['name', 'unit_price', 'quantity_in_stock']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Part Name (e.g. Engine Oil 5L)'}),
+            'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price in UGX'}),
+            'quantity_in_stock': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity in Stock'}),
+        }

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Customer, Vehicle, ServiceVisit, Part, VisitPartUsed
-from .forms import CustomerForm, VehicleForm, ServiceVisitForm, VisitPartUsedForm
+from .forms import CustomerForm, VehicleForm, ServiceVisitForm, VisitPartUsedForm, PartForm
 
 
 # 1. Dashboard View
@@ -86,3 +86,21 @@ def create_vehicle(request):
     else:
         form = VehicleForm()
     return render(request, 'bay/vehicle_form.html', {'form': form})
+
+
+# 7. Inventory / Part List View
+def part_list(request):
+    parts = Part.objects.all().order_by('name')
+    return render(request, 'bay/part_list.html', {'parts': parts})
+
+
+# 8. Create New Part View
+def create_part(request):
+    if request.method == 'POST':
+        form = PartForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('part_list')
+    else:
+        form = PartForm()
+    return render(request, 'bay/part_form.html', {'form': form})
